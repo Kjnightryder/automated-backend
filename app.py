@@ -28,11 +28,20 @@ def submit_assessment():
     })
 from flask import send_file
 
+from flask import send_file, jsonify
+import os
+
 @app.route("/api/download/excel", methods=["GET"])
 def download_excel():
+    if not os.path.exists("results.xlsx"):
+        return jsonify({
+            "error": "No results yet. Please submit at least one assessment first."
+        }), 400
+
     return send_file(
         "results.xlsx",
         as_attachment=True,
         download_name="assessment_results.xlsx"
     )
+
 
