@@ -26,3 +26,13 @@ def submit_assessment():
         "status": "success",
         "candidate_id": result["candidate_id"]
     })
+from flask import send_file
+
+@app.route("/api/download/excel", methods=["GET"])
+def download_excel():
+    return send_file(
+        "results.xlsx",
+        as_attachment=True,
+        download_name="assessment_results.xlsx"
+    )
+
