@@ -1,8 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
+from flask_cors import CORS
 from excel_writer import append_result
 import uuid
+import os
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route("/")
 def home():
@@ -13,11 +16,11 @@ def submit_assessment():
     data = request.json
 
     result = {
-        "candidate_id": f"CAND-{uuid.uuid4().hex[:6]}",
-        "score": data.get("score", 0),
-        "time_taken": data.get("time_taken", 0),
-        "violations": data.get("violations", 0),
-        "decision": data.get("decision", "Pending")
+        "candidate_id": f"CAND-{uuid.uuid4().hex[:8]}",
+        "score": data.get("score"),
+        "time_taken": data.get("time_taken"),
+        "violations": data.get("violations"),
+        "decision": data.get("decision")
     }
 
     append_result(result)
@@ -26,10 +29,6 @@ def submit_assessment():
         "status": "success",
         "candidate_id": result["candidate_id"]
     })
-from flask import send_file
-
-from flask import send_file, jsonify
-import os
 
 @app.route("/api/download/excel", methods=["GET"])
 def download_excel():
@@ -43,5 +42,4 @@ def download_excel():
         as_attachment=True,
         download_name="assessment_results.xlsx"
     )
-
 
